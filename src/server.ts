@@ -1,6 +1,6 @@
 import * as express from 'express';
-import * as socketio from 'socket.io';
 import * as path from 'path';
+import { Socket } from 'socket.io';
 
 const app = express();
 app.set('port', process.env.PORT || 3000);
@@ -19,6 +19,23 @@ app.use(express.static(publicDirectoryPath));
 
 io.on('connection', function (socket: any) {
   console.log('a user connected');
+
+  interface coords {
+    latitude: string;
+    longitude: string;
+  }
+
+  let message: string;
+
+  socket.on('sendLocation', (coords: coords) => {
+    socket.emit(
+      'locationMessage',
+      `https://google.com/maps?q=${coords.latitude},${coords.longitude}`
+    );
+    console.log(coords);
+  });
+
+
 });
 
 const server = http.listen(3000, function () {

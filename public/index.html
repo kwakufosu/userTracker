@@ -13,7 +13,30 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
       const socket = io('http://localhost:3000');
-      
+
+      function onError(error) {
+        alert(
+          'code: ' + error.code + '\n' + 'message: ' + error.message + '\n'
+        );
+      }
+
+      socket.on('locationMessage', (message) => {
+        console.log(message);
+      });
+
+      const $watchLocationBtn = document.querySelector('button');
+      $watchLocationBtn.addEventListener('click', () => {
+        navigator.geolocation.watchPosition(
+          (position) => {
+            socket.emit('sendLocation', {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            });
+          },
+          onError,
+          (options = { frequency: 1000 })
+        );
+      });
     </script>
   </body>
 </html>

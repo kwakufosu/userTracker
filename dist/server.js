@@ -14,6 +14,11 @@ app.use(express.static(publicDirectoryPath));
 // a websocket, log that a user has connected
 io.on('connection', function (socket) {
     console.log('a user connected');
+    let message;
+    socket.on('sendLocation', (coords) => {
+        socket.emit('locationMessage', `https://google.com/maps?q=${coords.latitude},${coords.longitude}`);
+        console.log(coords);
+    });
 });
 const server = http.listen(3000, function () {
     console.log('listening on *:3000');
